@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS SAA Flashcards</title>
+<style>
+  :root {
+    --bg: #f7f6f3;
+    --card-bg: #ffffff;
+    --text: #1a1a18;
+    --text-muted: #6a6a64;
+    --border: rgba(0,0,0,0.12);
+    --border-strong: rgba(0,0,0,0.22);
+    --radius: 12px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --card-bg: #2a2a27;
+      --text: #ededea;
+      --text-muted: #a0a09a;
+      --border: rgba(255,255,255,0.14);
+      --border-strong: rgba(255,255,255,0.28);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 24px 16px;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 22px; font-weight: 500; margin: 0 0 4px; }
+  .sub { font-size: 13px; color: var(--text-muted); margin: 0 0 20px; }
+  #filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  button {
+    font-family: inherit;
+    background: transparent;
+    color: var(--text);
+    border: 0.5px solid var(--border-strong);
+    border-radius: 8px;
+    padding: 8px 14px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.12s, transform 0.05s;
+  }
+  button:hover { background: rgba(125,125,125,0.12); }
+  button:active { transform: scale(0.98); }
+  .filter-btn { padding: 5px 12px; font-size: 12px; }
+  .filter-btn.active { background: rgba(125,125,125,0.18); border-color: var(--border-strong); font-weight: 500; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  #counter { font-size: 13px; color: var(--text-muted); }
+  #shuffle { padding: 6px 14px; font-size: 13px; }
+  .card {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    min-height: 300px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    border-left: 5px solid var(--accent, #888);
+  }
+  .card.front { align-items: center; justify-content: center; text-align: center; }
+  .cat-label { font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+  .card h2 { font-size: 24px; font-weight: 500; margin: 0 0 18px; }
+  .card .def { font-size: 16px; line-height: 1.6; margin: 0; max-width: 90%; }
+  .hint { font-size: 12px; color: var(--text-muted); margin-top: 22px; }
+  .back h2 { font-size: 20px; margin: 0 0 16px; }
+  .section { margin-bottom: 14px; font-size: 15px; }
+  .section .label { font-weight: 500; display: block; margin-bottom: 2px; }
+  .nav { display: flex; gap: 8px; margin-top: 16px; }
+  .nav button { flex: 1; }
+  .footer { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 20px; }
+  kbd { background: rgba(125,125,125,0.18); border-radius: 4px; padding: 1px 6px; font-size: 12px; font-family: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>AWS Solutions Architect Associate — Flashcards</h1>
+  <p class="sub">60 services · tap a card to flip · use arrow keys or buttons to navigate</p>
+
+  <div id="filters"></div>
+
+  <div class="topbar">
+    <span id="counter">Card 1</span>
+    <button id="shuffle">&#8646; Shuffle</button>
+  </div>
+
+  <div id="card" class="card front"></div>
+
+  <div class="nav">
+    <button id="prev">&#8592; Prev</button>
+    <button id="flip">&#8635; Flip</button>
+    <button id="next">Next &#8594;</button>
+  </div>
+
+  <p class="footer">Saved offline — works with no internet. Keyboard: <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> navigate · <kbd>Space</kbd> flip</p>
+</div>
+
+<script>
+const DECK = [
+  {cat:"Security", color:"#378ADD", name:"IAM", q:"Controls who can access your AWS account and what they can do.", adv:"Free, fine-grained, MFA, global, roles for service-to-service.", dis:"Complex JSON policies; easy to over-permission.", with:"Almost every AWS service"},
+  {cat:"Security", color:"#378ADD", name:"Programmatic access", q:"Control AWS via code/CLI using access keys, SDKs, or API.", adv:"Automatable, scriptable, integrates into apps.", dis:"Long-term keys risky if leaked; rotate them.", with:"CLI, SDKs (boto3), service APIs"},
+  {cat:"Security", color:"#378ADD", name:"Non-IAM access (Federation)", q:"Let external users access AWS via identity federation + roles.", adv:"No individual IAM users; reuse corporate logins; temp creds.", dis:"Setup is complex; depends on external IdP.", with:"IAM Identity Center, Cognito, SAML/OIDC, STS"},
+  {cat:"Security", color:"#378ADD", name:"Amazon Cognito", q:"Adds sign-up, sign-in & access control to web/mobile apps.", adv:"Handles auth, scales to millions, social/enterprise login, MFA.", dis:"Confusing pools setup; limited customization; cost grows.", with:"API Gateway, Lambda, S3, app frontends"},
+  {cat:"Security", color:"#378ADD", name:"KMS", q:"Create & manage encryption keys for data across AWS.", adv:"Centralized, integrates widely, auto-rotation, audited, cheap.", dis:"Region-specific; not for arbitrary secrets; throttling.", with:"S3, EBS, RDS, Lambda"},
+  {cat:"Security", color:"#378ADD", name:"CloudHSM", q:"Dedicated physical hardware module for full key control.", adv:"Single-tenant, FIPS 140-2 L3 compliance, full control.", dis:"Pricier than KMS; self-managed; complex.", with:"KMS custom key store, RDS TDE, Redshift"},
+  {cat:"Security", color:"#378ADD", name:"Systems Manager", q:"Manage & operate servers at scale (patch, run commands, config).", adv:"Manage many instances; Parameter Store; no-SSH sessions.", dis:"Feature-heavy learning curve; needs SSM agent.", with:"EC2, on-prem, Parameter Store, CloudWatch"},
+  {cat:"Security", color:"#378ADD", name:"Secrets Manager", q:"Store, retrieve & auto-rotate secrets like DB passwords.", adv:"Auto-rotation, KMS-encrypted, fine-grained, auditable.", dis:"Costs per secret; rotation needs Lambda for custom.", with:"RDS, Aurora, Redshift, Lambda"},
+  {cat:"Security", color:"#378ADD", name:"AWS Shield", q:"DDoS protection. Standard is free; Advanced is paid.", adv:"Standard free & always on; Advanced 24/7 team & cost protection.", dis:"Advanced expensive; Standard covers only common attacks.", with:"CloudFront, Route 53, ELB, Global Accelerator"},
+  {cat:"Security", color:"#378ADD", name:"AWS WAF", q:"Web app firewall filtering HTTP to block SQLi, XSS, etc.", adv:"Custom rules, IP/geo/pattern blocks, managed rules, rate limit.", dis:"Config effort; per rule/request cost; not a DDoS fix alone.", with:"CloudFront, API Gateway, ALB, AppSync"},
+  {cat:"Security", color:"#378ADD", name:"Firewall Manager", q:"Centrally manage WAF, Shield & policies across accounts.", adv:"Central control; auto-applies to new resources; consistent.", dis:"Requires Organizations; extra cost; overkill for one account.", with:"WAF, Shield Advanced, Organizations, VPC SGs"},
+  {cat:"Security", color:"#378ADD", name:"GuardDuty", q:"ML threat detection monitoring account for malicious activity.", adv:"No agents; auto log analysis; finds compromises; easy enable.", dis:"Detects but doesn't fix; cost scales with data; false positives.", with:"CloudTrail, VPC Flow Logs, DNS logs, Lambda"},
+  {cat:"Security", color:"#378ADD", name:"Amazon Inspector", q:"Automated vulnerability scanner for EC2, containers & Lambda.", adv:"Continuous scanning; finds vulns & exposure; risk scores.", dis:"Vulnerabilities only; cost per resource scanned.", with:"EC2, ECR, Lambda, Systems Manager"},
+  {cat:"Security", color:"#378ADD", name:"Amazon Macie", q:"ML service to discover & protect sensitive data in S3.", adv:"Finds PII; helps compliance (GDPR/HIPAA); alerts on exposure.", dis:"S3-only; cost scales with data; pricey on big buckets.", with:"S3, KMS, CloudWatch Events, Security Hub"},
+  {cat:"Security", color:"#378ADD", name:"AWS Config", q:"Records resource config over time & checks compliance.", adv:"Config history, drift detection, auto-remediate, relationships.", dis:"Cost per config item; pricey in busy accounts; rule setup.", with:"Most resources, CloudTrail, Lambda, SNS"},
+
+  {cat:"Compute", color:"#EF9F27", name:"EC2", q:"Virtual servers you rent and fully control (OS, CPU, RAM).", adv:"Full control; many types; flexible pricing; auto scaling.", dis:"You manage OS/patching/scaling; costly if oversized.", with:"EBS, S3, ELB, Auto Scaling, VPC, IAM"},
+  {cat:"Compute", color:"#EF9F27", name:"Lambda", q:"Serverless: runs code on events, no servers to manage.", adv:"No server mgmt; auto-scales; pay per use; fast deploy.", dis:"15-min limit; cold starts; not for long/stateful jobs.", with:"API Gateway, S3, DynamoDB, SQS, SNS, EventBridge"},
+
+  {cat:"App Integration", color:"#7F77DD", name:"SQS", q:"Message queue to decouple app components reliably.", adv:"Managed, auto-scales, decouples, Standard & FIFO, DLQ.", dis:"Standard may dup & disorder; pull-based; size limits.", with:"Lambda, EC2, SNS, Auto Scaling"},
+  {cat:"App Integration", color:"#7F77DD", name:"SNS", q:"Pub/sub: send one message to many subscribers at once.", adv:"Fan-out, managed, push-based, wide integration, filtering.", dis:"No persistence/replay by default; silent delivery failures.", with:"SQS, Lambda, CloudWatch Alarms, email/SMS"},
+  {cat:"App Integration", color:"#7F77DD", name:"Amazon MQ", q:"Managed ActiveMQ/RabbitMQ broker for migrating apps.", adv:"Supports JMS/AMQP/MQTT standards; good for lift-and-shift.", dis:"Less scalable than SQS/SNS; choose instance sizes.", with:"EC2, on-prem & existing messaging apps"},
+
+  {cat:"Storage", color:"#1D9E75", name:"S3", q:"Object storage for files of any size, accessed over internet.", adv:"Near-unlimited, 11 nines durable, storage classes, cheap.", dis:"Object not filesystem; request/retrieval costs.", with:"CloudFront, Lambda, Athena, nearly everything"},
+  {cat:"Storage", color:"#1D9E75", name:"Instance Store", q:"Temporary block storage on the EC2 host; lost on stop.", adv:"Very fast local disk; free with instance; good for cache.", dis:"Ephemeral; can't detach/reattach; fixed size.", with:"EC2 only"},
+  {cat:"Storage", color:"#1D9E75", name:"EBS", q:"Network block storage (virtual disk) that persists for EC2.", adv:"Persistent, snapshots to S3, resizable, encrypted.", dis:"Tied to one AZ; one instance at a time; pay provisioned.", with:"EC2, S3 snapshots, KMS"},
+  {cat:"Storage", color:"#1D9E75", name:"EFS", q:"Managed shared NFS file system for many Linux instances.", adv:"Shared across instances, auto-scales, multi-AZ, managed.", dis:"Linux/NFS only; pricier than EBS; higher latency.", with:"EC2 (many), Lambda, ECS, on-prem"},
+  {cat:"Storage", color:"#1D9E75", name:"FSx for Windows", q:"Managed Windows (SMB) file system for Windows apps.", adv:"Native Windows shares; AD integration; managed backups.", dis:"Windows-focused; costs more; needs AD for full features.", with:"Windows EC2, Active Directory, on-prem Windows"},
+  {cat:"Storage", color:"#1D9E75", name:"FSx for Lustre", q:"High-performance file system for ML & HPC workloads.", adv:"Extremely fast (sub-ms); S3 integration; great for HPC/ML.", dis:"Specialized & pricey; mainly Linux; overkill general use.", with:"EC2, S3, HPC clusters, ML training"},
+
+  {cat:"Database", color:"#D4537E", name:"RDS", q:"Managed relational DB (MySQL, Postgres, Oracle, SQL Server).", adv:"Managed patch/backup, Multi-AZ HA, read replicas.", dis:"Less control; version limits; scaling below Aurora.", with:"EC2, Lambda, Secrets Manager, CloudWatch"},
+  {cat:"Database", color:"#D4537E", name:"Amazon Aurora", q:"AWS high-performance MySQL/Postgres-compatible DB.", adv:"Up to 5x MySQL; auto-scale storage; 6 copies/3 AZs.", dis:"Pricier than RDS; MySQL/Postgres only; AWS lock-in.", with:"RDS ecosystem, Lambda, Secrets Manager"},
+  {cat:"Database", color:"#D4537E", name:"DynamoDB", q:"Serverless NoSQL key-value & document DB, fast at any scale.", adv:"Serverless, auto-scale, single-ms latency, global tables.", dis:"NoSQL no complex joins; careful modeling; query limits.", with:"Lambda, API Gateway, DAX, S3, Kinesis"},
+  {cat:"Database", color:"#D4537E", name:"ElastiCache", q:"Managed in-memory cache (Redis/Memcached) to speed apps.", adv:"Microsecond reads; cuts DB load; Redis persistence/replica.", dis:"In-memory loss (Memcached); you manage cache logic; cost.", with:"RDS, DynamoDB, EC2, web apps"},
+  {cat:"Database", color:"#D4537E", name:"Redshift", q:"Managed data warehouse for fast analytics (OLAP) on big data.", adv:"Petabyte analytics; columnar; fast; Spectrum queries S3.", dis:"Analytics not transactions; cluster mgmt; cost.", with:"S3, QuickSight, Glue, Kinesis, BI tools"},
+  {cat:"Database", color:"#D4537E", name:"Amazon Kinesis", q:"Collect & process real-time streaming data (logs, clicks, IoT).", adv:"Real-time; huge throughput; Streams/Firehose/Analytics.", dis:"Shard mgmt complex; cost at volume; learning curve.", with:"Lambda, S3, Redshift, Firehose"},
+  {cat:"Database", color:"#D4537E", name:"Amazon EMR", q:"Managed big-data platform (Spark, Hadoop, Hive) on clusters.", adv:"Managed clusters; many frameworks; Spot savings; scales.", dis:"Needs big-data expertise; cluster cost; complex.", with:"S3, EC2, Spot, Glue, Kinesis"},
+  {cat:"Database", color:"#D4537E", name:"Neptune", q:"Managed graph DB for connected data (social, recommendations).", adv:"Optimized for graphs; Gremlin & SPARQL; HA; managed.", dis:"Graph-only; query-language learning curve.", with:"EC2, Lambda, relationship-query apps"},
+  {cat:"Database", color:"#D4537E", name:"ElasticSearch / OpenSearch", q:"Managed search & analytics engine for real-time data.", adv:"Full-text search; log analytics; real-time; dashboards.", dis:"Cluster tuning; can be costly; OpenSearch rebrand.", with:"CloudWatch Logs, Kinesis, Logstash, S3"},
+
+  {cat:"Migration", color:"#D85A30", name:"Snow Family", q:"Physical devices shipped to move huge data when net is slow.", adv:"PB-scale no bandwidth limit; rugged, secure; edge compute.", dis:"Shipping takes days; not real-time; Snowmobile extreme.", with:"S3, on-prem data centers, EC2 edge"},
+  {cat:"Migration", color:"#D85A30", name:"Storage Gateway", q:"Hybrid: connects on-prem systems to AWS cloud storage.", adv:"Bridges on-prem & cloud; file/volume/tape; caching.", dis:"Needs on-prem hardware/VM; config complex; net-dependent.", with:"S3, Glacier, EBS, on-prem servers"},
+  {cat:"Migration", color:"#D85A30", name:"DataSync", q:"Automates & speeds large data transfers to/within AWS.", adv:"Fast automated; scheduling; validation; cheaper; ongoing sync.", dis:"Needs agent on-prem; transfer costs; net-dependent.", with:"S3, EFS, FSx, on-prem NFS/SMB"},
+  {cat:"Migration", color:"#D85A30", name:"AWS Backup", q:"Centralized service to automate backups across AWS services.", adv:"Central policies; scheduling; cross-region/account; reports.", dis:"Storage costs; not every feature covered; restore varies.", with:"EBS, RDS, DynamoDB, EFS, FSx, Storage Gateway"},
+  {cat:"Migration", color:"#D85A30", name:"DMS", q:"Migrate databases to AWS with minimal downtime.", adv:"Min downtime; homogeneous & heterogeneous (SCT); replication.", dis:"Schema convert needs SCT; complex needs planning; cost.", with:"RDS, Aurora, on-prem DBs, S3, Redshift"},
+  {cat:"Migration", color:"#D85A30", name:"App Migration (MGN)", q:"Lift-and-shift whole on-prem servers to AWS.", adv:"Whole-server lift; min downtime; auto EC2 convert.", dis:"Lift-and-shift only; needs agent; test before cutover.", with:"EC2, on-prem/VMware servers, EBS"},
+
+  {cat:"Networking", color:"#639922", name:"Amazon VPC", q:"Your private isolated network in AWS (IPs, subnets, routing).", adv:"Full network control; public/private subnets; SGs & NACLs.", dis:"Learning curve; misconfig blocks traffic or risks security.", with:"EC2, RDS, Lambda, nearly all resources"},
+  {cat:"Networking", color:"#639922", name:"VPC Endpoints", q:"Private connections to AWS services without public internet.", adv:"More secure; no internet gateway; lower transfer cost.", dis:"Interface endpoints cost hourly; not all support gateway.", with:"S3, DynamoDB (gateway), most via PrivateLink"},
+  {cat:"Networking", color:"#639922", name:"AWS VPN", q:"Encrypted connection over internet from on-prem to VPC.", adv:"Quick setup; encrypted; cheaper than Direct Connect.", dis:"Public internet variable; bandwidth limited.", with:"VPC, on-prem networks, Direct Connect backup"},
+  {cat:"Networking", color:"#639922", name:"Direct Connect", q:"Dedicated private physical link from data center to AWS.", adv:"Consistent low latency; high bandwidth; secure; cheaper transfer.", dis:"Weeks to set up; pricier; not encrypted alone.", with:"VPC, on-prem data centers, VPN"},
+  {cat:"Networking", color:"#639922", name:"API Gateway", q:"Managed front door to create, publish & secure APIs.", adv:"Managed; auth/throttle/cache; auto-scales; REST & WebSocket.", dis:"Per-request cost adds up; latency; config complexity.", with:"Lambda, EC2, DynamoDB, Cognito, CloudWatch"},
+  {cat:"Networking", color:"#639922", name:"CloudFront", q:"CDN caching content at global edge locations for speed.", adv:"Faster global; cuts origin load; WAF/Shield; HTTPS.", dis:"Cache invalidation tricky; transfer cost; config.", with:"S3, EC2, ELB, API Gateway, WAF, Shield"},
+  {cat:"Networking", color:"#639922", name:"Route 53", q:"Scalable DNS & domain registration routing users to apps.", adv:"HA DNS; registration; health checks; routing policies.", dis:"DNS complexity; small per-query cost; propagation delay.", with:"CloudFront, ELB, S3, EC2, Global Accelerator"},
+  {cat:"Networking", color:"#639922", name:"Global Accelerator", q:"Routes traffic over AWS network via nearest edge for speed.", adv:"Faster, consistent; static IPs; auto failover; non-HTTP too.", dis:"Hourly + data costs; redundant if CloudFront suffices.", with:"ELB, EC2, Elastic IPs, global apps"},
+
+  {cat:"Management", color:"#888780", name:"CloudWatch", q:"Monitoring: metrics, logs, events with alarms & dashboards.", adv:"Central monitoring; alarms trigger actions; dashboards.", dis:"Detailed metrics/logs cost; setup needed; volume pricey.", with:"EC2, Lambda, Auto Scaling, SNS, nearly all"},
+  {cat:"Management", color:"#888780", name:"CloudTrail", q:"Records every API call — an audit trail of who did what.", adv:"Full audit log; security/compliance; tracks changes.", dis:"Long-term storage costs; high volume; needs analysis tools.", with:"S3, CloudWatch, GuardDuty, Config, Athena"},
+  {cat:"Management", color:"#888780", name:"CloudFormation", q:"Infrastructure-as-code: define resources in a template.", adv:"Repeatable; version-controlled; auto rollback; free.", dis:"Template syntax curve; failed-stack debugging tricky.", with:"Nearly all services, IAM, nested stacks"},
+  {cat:"Management", color:"#888780", name:"Elastic Beanstalk", q:"PaaS: upload code, it handles deploy/scale/load-balance.", adv:"Easy deploy; manages infra; auto-scale; many languages.", dis:"Less control; black-box feel; customization limits.", with:"EC2, ELB, Auto Scaling, RDS, S3"},
+  {cat:"Management", color:"#888780", name:"ParallelCluster", q:"Open-source tool to deploy & manage HPC clusters on AWS.", adv:"Simplifies HPC setup; auto-scale; Slurm; FSx Lustre.", dis:"Niche HPC; needs expertise; cluster cost.", with:"EC2, FSx for Lustre, S3, Spot"},
+  {cat:"Management", color:"#888780", name:"Step Functions", q:"Coordinate services into a visual workflow (state machine).", adv:"Visual workflows; built-in retries/errors; serverless.", dis:"Per-transition cost; learning model; overkill if simple.", with:"Lambda, SNS, SQS, ECS, DynamoDB"},
+  {cat:"Management", color:"#888780", name:"SWF", q:"Older service to coordinate tasks incl. human tasks.", adv:"Long-running & human workflows; reliable tracking; control.", dis:"Older & complex; manage deciders/workers; SF preferred.", with:"EC2, custom worker apps"},
+  {cat:"Management", color:"#888780", name:"AWS Organizations", q:"Centrally manage multiple AWS accounts as one org.", adv:"Consolidated billing; SCPs restrict accounts; OUs.", dis:"SCPs can block needed actions; governance complexity.", with:"IAM, SCPs, Firewall Manager, Config, Control Tower"},
+  {cat:"Management", color:"#888780", name:"OpsWorks", q:"Config management using Chef & Puppet to automate servers.", adv:"Automates config; good if you use Chef/Puppet; lifecycle.", dis:"Needs Chef/Puppet knowledge; declining; SSM preferred.", with:"EC2, on-prem servers, CloudWatch, RDS"},
+  {cat:"Management", color:"#888780", name:"AWS Glue", q:"Serverless ETL service to prep & move data for analytics.", adv:"Serverless ETL; auto schema discovery; pay per use.", dis:"Spark curve; job costs; debugging tricky; cold start.", with:"S3, Redshift, Athena, RDS, data lakes"}
+];
+
+const CATS = ["All","Security","Compute","App Integration","Storage","Database","Migration","Networking","Management"];
+
+let activeCat = "All";
+let deck = DECK.slice();
+let idx = 0;
+let flipped = false;
+
+const filtersEl = document.getElementById('filters');
+const cardEl = document.getElementById('card');
+const counterEl = document.getElementById('counter');
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function buildFilters(){
+  filtersEl.innerHTML = '';
+  CATS.forEach(c => {
+    const b = document.createElement('button');
+    b.textContent = c;
+    b.className = 'filter-btn' + (c === activeCat ? ' active' : '');
+    b.onclick = () => { activeCat = c; rebuild(); };
+    filtersEl.appendChild(b);
+  });
+}
+
+function rebuild(){
+  deck = activeCat === "All" ? DECK.slice() : DECK.filter(d => d.cat === activeCat);
+  idx = 0; flipped = false;
+  buildFilters();
+  render();
+}
+
+function render(){
+  const card = deck[idx];
+  counterEl.textContent = `Card ${idx+1} of ${deck.length}`;
+  cardEl.style.setProperty('--accent', card.color);
+  if(!flipped){
+    cardEl.className = 'card front';
+    cardEl.innerHTML = `
+      <span class="cat-label">${esc(card.cat)}</span>
+      <h2>${esc(card.name)}</h2>
+      <p class="def">${esc(card.q)}</p>
+      <span class="hint">&#9757; tap to reveal</span>`;
+  } else {
+    cardEl.className = 'card back';
+    cardEl.innerHTML = `
+      <h2>${esc(card.name)}</h2>
+      <div class="section"><span class="label">&#9650; Advantages</span>${esc(card.adv)}</div>
+      <div class="section"><span class="label">&#9660; Limitations</span>${esc(card.dis)}</div>
+      <div class="section"><span class="label">&#9670; Used with</span>${esc(card.with)}</div>`;
+  }
+}
+
+cardEl.onclick = () => { flipped = !flipped; render(); };
+document.getElementById('flip').onclick = (e)=>{ e.stopPropagation(); flipped = !flipped; render(); };
+document.getElementById('next').onclick = ()=>{ idx = (idx+1) % deck.length; flipped = false; render(); };
+document.getElementById('prev').onclick = ()=>{ idx = (idx-1+deck.length) % deck.length; flipped = false; render(); };
+document.getElementById('shuffle').onclick = ()=>{
+  for(let i = deck.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); [deck[i],deck[j]]=[deck[j],deck[i]]; }
+  idx = 0; flipped = false; render();
+};
+
+document.addEventListener('keydown', (e)=>{
+  if(e.key === 'ArrowRight'){ idx = (idx+1) % deck.length; flipped = false; render(); }
+  else if(e.key === 'ArrowLeft'){ idx = (idx-1+deck.length) % deck.length; flipped = false; render(); }
+  else if(e.key === ' '){ e.preventDefault(); flipped = !flipped; render(); }
+});
+
+buildFilters();
+render();
+</script>
+</body>
+</html>
