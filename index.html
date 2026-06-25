@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AWS SAA Flashcards</title>
+<title>AWS SAA Study</title>
 <style>
   :root {
     --bg: #f7f6f3;
@@ -12,6 +12,7 @@
     --text-muted: #6a6a64;
     --border: rgba(0,0,0,0.12);
     --border-strong: rgba(0,0,0,0.22);
+    --good: #1d9e75;
     --radius: 12px;
   }
   @media (prefers-color-scheme: dark) {
@@ -22,6 +23,7 @@
       --text-muted: #a0a09a;
       --border: rgba(255,255,255,0.14);
       --border-strong: rgba(255,255,255,0.28);
+      --good: #3fcf99;
     }
   }
   * { box-sizing: border-box; }
@@ -53,8 +55,8 @@
   .filter-btn { padding: 5px 12px; font-size: 12px; }
   .filter-btn.active { background: rgba(125,125,125,0.18); border-color: var(--border-strong); font-weight: 500; }
   .topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  #counter { font-size: 13px; color: var(--text-muted); }
-  #shuffle { padding: 6px 14px; font-size: 13px; }
+  #counter, #q-counter { font-size: 13px; color: var(--text-muted); }
+  #shuffle, #q-shuffle { padding: 6px 14px; font-size: 13px; }
   .card {
     background: var(--card-bg);
     border: 0.5px solid var(--border-strong);
@@ -78,32 +80,133 @@
   .nav button { flex: 1; }
   .footer { font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 20px; }
   kbd { background: rgba(125,125,125,0.18); border-radius: 4px; padding: 1px 6px; font-size: 12px; font-family: inherit; }
+
+  /* Home menu */
+  .menu { display: flex; flex-direction: column; gap: 14px; }
+  .menu-card {
+    text-align: left;
+    background: var(--card-bg);
+    border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius);
+    padding: 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-left: 5px solid var(--accent, #888);
+  }
+  .menu-title { font-size: 19px; font-weight: 500; }
+  .menu-desc { font-size: 13px; color: var(--text-muted); }
+  .menu-arrow { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+
+  /* Back-to-home link */
+  .home-link { padding: 4px 10px; font-size: 12px; margin-bottom: 14px; }
+
+  /* Question bank front */
+  .q-text { font-size: 17px; font-weight: 500; margin: 0 0 16px; }
+  .q-opts { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; width: 100%; }
+  .q-opts li {
+    border: 0.5px solid var(--border); border-radius: 8px;
+    padding: 9px 12px; font-size: 14px; line-height: 1.45;
+  }
+  .q-opts li.correct { border-color: var(--good); background: rgba(29,158,117,0.10); }
+  .q-opts li .mark { color: var(--good); font-weight: 600; margin-right: 6px; }
+  .trap { margin-bottom: 10px; font-size: 14px; }
+  .trap .topt { font-weight: 500; }
+  .trap .treason { color: var(--text-muted); }
+  .view { display: none; }
+  .view.active { display: block; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>AWS Solutions Architect Associate — Flashcards</h1>
-  <p class="sub">60 services · tap a card to flip · use arrow keys or buttons to navigate</p>
 
-  <div id="filters"></div>
-
-  <div class="topbar">
-    <span id="counter">Card 1</span>
-    <button id="shuffle">&#8646; Shuffle</button>
+  <!-- ===================== HOME ===================== -->
+  <div id="home" class="view active">
+    <h1>AWS Solutions Architect Associate</h1>
+    <p class="sub">Pick a study deck</p>
+    <div class="menu">
+      <button class="menu-card" data-go="services" style="--accent:#EF9F27">
+        <span class="menu-title">AWS Services</span>
+        <span class="menu-desc">60 service flashcards across 8 categories — definition, advantages, limitations, and what they pair with.</span>
+        <span class="menu-arrow">Start &#8594;</span>
+      </button>
+      <button class="menu-card" data-go="qbank" style="--accent:#378ADD">
+        <span class="menu-title">AWS Question Bank</span>
+        <span class="menu-desc">Exam-style questions — flip for the correct answer, trigger words, trap explanations, and a rule card.</span>
+        <span class="menu-arrow">Start &#8594;</span>
+      </button>
+    </div>
   </div>
 
-  <div id="card" class="card front"></div>
+  <!-- ===================== SERVICES ===================== -->
+  <div id="services" class="view">
+    <button class="home-link" data-go="home">&#8592; Home</button>
+    <h1>AWS Services — Flashcards</h1>
+    <p class="sub">60 services · tap a card to flip · use arrow keys or buttons to navigate</p>
 
-  <div class="nav">
-    <button id="prev">&#8592; Prev</button>
-    <button id="flip">&#8635; Flip</button>
-    <button id="next">Next &#8594;</button>
+    <div id="filters"></div>
+
+    <div class="topbar">
+      <span id="counter">Card 1</span>
+      <button id="shuffle">&#8646; Shuffle</button>
+    </div>
+
+    <div id="card" class="card front"></div>
+
+    <div class="nav">
+      <button id="prev">&#8592; Prev</button>
+      <button id="flip">&#8635; Flip</button>
+      <button id="next">Next &#8594;</button>
+    </div>
+
+    <p class="footer">Saved offline — works with no internet. Keyboard: <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> navigate · <kbd>Space</kbd> flip</p>
   </div>
 
-  <p class="footer">Saved offline — works with no internet. Keyboard: <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> navigate · <kbd>Space</kbd> flip</p>
+  <!-- ===================== QUESTION BANK ===================== -->
+  <div id="qbank" class="view">
+    <button class="home-link" data-go="home">&#8592; Home</button>
+    <h1>AWS Question Bank</h1>
+    <p class="sub">Read the question, pick your answer, then tap the card to reveal &amp; explain</p>
+
+    <div class="topbar">
+      <span id="q-counter">Card 1</span>
+      <button id="q-shuffle">&#8646; Shuffle</button>
+    </div>
+
+    <div id="q-card" class="card front"></div>
+
+    <div class="nav">
+      <button id="q-prev">&#8592; Prev</button>
+      <button id="q-flip">&#8635; Flip</button>
+      <button id="q-next">Next &#8594;</button>
+    </div>
+
+    <p class="footer">Saved offline — works with no internet. Keyboard: <kbd>&#8592;</kbd> <kbd>&#8594;</kbd> navigate · <kbd>Space</kbd> flip</p>
+  </div>
+
 </div>
 
 <script>
+/* ============================================================
+   View routing
+   ============================================================ */
+function show(view){
+  document.querySelectorAll('.view').forEach(v => v.classList.toggle('active', v.id === view));
+  window.scrollTo(0,0);
+}
+document.querySelectorAll('[data-go]').forEach(el => {
+  el.addEventListener('click', () => show(el.dataset.go));
+});
+function currentView(){
+  const v = document.querySelector('.view.active');
+  return v ? v.id : 'home';
+}
+
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ============================================================
+   SERVICES DECK
+   ============================================================ */
 const DECK = [
   {cat:"Security", color:"#378ADD", name:"IAM", q:"Controls who can access your AWS account and what they can do.", adv:"Free, fine-grained, MFA, global, roles for service-to-service.", dis:"Complex JSON policies; easy to over-permission.", with:"Almost every AWS service"},
   {cat:"Security", color:"#378ADD", name:"Programmatic access", q:"Control AWS via code/CLI using access keys, SDKs, or API.", adv:"Automatable, scriptable, integrates into apps.", dis:"Long-term keys risky if leaked; rotate them.", with:"CLI, SDKs (boto3), service APIs"},
@@ -184,8 +287,6 @@ const filtersEl = document.getElementById('filters');
 const cardEl = document.getElementById('card');
 const counterEl = document.getElementById('counter');
 
-function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
 function buildFilters(){
   filtersEl.innerHTML = '';
   CATS.forEach(c => {
@@ -234,14 +335,336 @@ document.getElementById('shuffle').onclick = ()=>{
   idx = 0; flipped = false; render();
 };
 
+/* ============================================================
+   QUESTION BANK DECK
+   ============================================================ */
+const QBANK = [
+  {
+    n:1, color:"#EF9F27", service:"EC2 Placement Groups",
+    q:"Which of the following correctly describes a placement group?",
+    opts:[
+      "Redundancy group of EC2 instances deployed across multiple Availability Zones (AZs)",
+      "The combination of CPU, memory, storage performance, and network capacity selected when creating an EC2 instance.",
+      "A feature that lets you logically group multiple EC2 instances, enabling low-latency communication and mitigating the impact of hardware failures.",
+      "This includes computing optimization, memory optimization, and storage optimization."
+    ],
+    correct:2,
+    why:"A placement group influences how instances are physically placed on AWS hardware — covering both low-latency packing (Cluster) and failure isolation (Spread/Partition).",
+    triggers:"\"logically group multiple EC2 instances\" + \"low-latency communication\" (Cluster) + \"mitigating the impact of hardware failures\" (Spread/Partition).",
+    traps:[
+      {t:"Multi-AZ redundancy group", r:"wrong concept — that's generic multi-AZ redundancy; placement groups keep instances together (often one AZ)."},
+      {t:"CPU/memory/storage/network combination", r:"wrong service — that's an instance type."},
+      {t:"Computing/memory/storage optimization", r:"wrong service — those are instance type families."}
+    ],
+    rule:"Logically group EC2 instances for low-latency and/or hardware-failure isolation → Placement Group (Cluster=low latency, Spread/Partition=fault isolation)."
+  },
+  {
+    n:2, color:"#EF9F27", service:"EC2 Partition Placement Groups",
+    q:"Which of the following correctly describes \"partition placement groups\"?",
+    opts:[
+      "EC2 instances cannot be deployed in different Availability Zones (AZs).",
+      "Each partition will contain only one EC2 instance.",
+      "Each partition within a group does not share a rack.",
+      "It launches on dedicated hardware, separate from other EC2 instances."
+    ],
+    correct:2,
+    why:"AWS guarantees partitions sit on distinct racks (separate power and network), so a hardware failure in one partition stays contained. Built for large distributed/replicated workloads (HDFS, Cassandra, Kafka).",
+    triggers:"\"partition placement groups\" + \"does not share a rack\" (the defining isolation property).",
+    traps:[
+      {t:"Can't span different AZs", r:"wrong fact — a partition group CAN span multiple AZs (up to 7 partitions per AZ)."},
+      {t:"One instance per partition", r:"wrong strategy — partitions hold many instances; one-per-rack is the Spread group."},
+      {t:"Dedicated hardware", r:"wrong service — that's Dedicated Hosts / Dedicated Instances."}
+    ],
+    rule:"Partition placement group → instances split into partitions on distinct racks (fault isolation for distributed big-data); Spread = one instance per rack; Dedicated = isolated tenancy."
+  },
+  {
+    n:3, color:"#639922", service:"Amazon VPC (public vs. private subnets)",
+    q:"Which AWS resource is appropriate to place in a private subnet within a VPC?",
+    opts:[
+      "Web servers accessed directly from the internet",
+      "Web servers under ELB that are not directly accessed from the internet",
+      "SSH jump server accessed directly from the internet",
+      "Amazon S3 objects that are not directly accessed from the internet"
+    ],
+    correct:1,
+    why:"A private subnet has no direct internet inbound path; servers behind an ELB receive traffic via the load balancer, so they belong in a private subnet for isolation.",
+    triggers:"\"private subnet\" (no route to an internet gateway) + \"not directly accessed from the internet\" (traffic arrives indirectly).",
+    traps:[
+      {t:"Web servers accessed directly from internet", r:"wrong subnet — direct inbound needs a public subnet with an internet gateway."},
+      {t:"SSH jump server", r:"wrong subnet — a bastion must be reachable from the internet → public subnet."},
+      {t:"S3 objects", r:"wrong service — S3 is regional and doesn't live inside any subnet."}
+    ],
+    rule:"Private subnet = no direct internet inbound → back-end/app/DB tiers behind an ELB; bastions/internet-facing go public; S3 isn't a subnet resource."
+  },
+  {
+    n:4, color:"#888780", service:"Elastic Load Balancing — Access Logs",
+    q:"What information is recorded when ELB access logs are enabled?",
+    opts:[
+      "AWS account operation history for ELB",
+      "Target system logs",
+      "Number of targets in normal/abnormal states",
+      "Client connection information"
+    ],
+    correct:3,
+    why:"ELB access logs record detailed request data: client IP and port, request paths, latencies, response codes, and processing times for connections passing through the load balancer.",
+    triggers:"\"ELB access logs\" + \"what information is recorded\" — per-request connection detail.",
+    traps:[
+      {t:"AWS account operation history", r:"wrong service — API/management actions are recorded by CloudTrail."},
+      {t:"Target system logs", r:"wrong source — app/OS logs live on the targets themselves."},
+      {t:"Target normal/abnormal counts", r:"wrong feature — that comes from health checks / CloudWatch metrics."}
+    ],
+    rule:"ELB access logs → per-request client connection details (IP, latency, paths, codes); API history = CloudTrail; health state = CloudWatch."
+  },
+  {
+    n:5, color:"#378ADD", service:"AWS Shared Responsibility Model",
+    q:"In AWS's shared responsibility model, which are AWS's responsibilities? (Select two)",
+    opts:[
+      "Data center access control",
+      "Firmware version upgrade for network devices",
+      "Managing AWS accounts created by users",
+      "Managing access permissions to the database",
+      "Encryption of data saved by the user"
+    ],
+    correct:[0,1],
+    why:"Both are part of the underlying infrastructure AWS owns and operates (physical security and hardware/firmware maintenance) — \"security OF the cloud.\"",
+    triggers:"\"AWS's responsibilities\" = security OF the cloud. Physical/infrastructure → AWS; user data/identities/access config → customer.",
+    traps:[
+      {t:"Managing user-created accounts", r:"customer — identity/account management is security IN the cloud."},
+      {t:"Managing DB access permissions", r:"customer — configuring IAM/DB permissions is on the customer."},
+      {t:"Encryption of user data", r:"customer — protecting customer data belongs to the customer."}
+    ],
+    rule:"AWS = security OF the cloud (facilities, hardware, firmware, managed infra). Customer = security IN the cloud (data, identities, access config, encryption choices)."
+  },
+  {
+    n:6, color:"#1D9E75", service:"Amazon S3 Transfer Acceleration",
+    q:"Which is a correct description of the S3 \"Transfer Acceleration\" feature?",
+    opts:[
+      "A feature that speeds up data transfer between users and S3 buckets.",
+      "A feature that automatically saves data to different regions.",
+      "A function to transfer data to an on-premises environment via a dedicated network.",
+      "A feature that allows high-speed data transfer to multiple Availability Zones (AZs)."
+    ],
+    correct:0,
+    why:"Transfer Acceleration uses the CloudFront edge network so uploads/downloads ride AWS's optimized backbone, cutting latency for geographically distant clients.",
+    triggers:"\"Transfer Acceleration\" + \"speeds up data transfer between users and S3\" (routes via CloudFront edge).",
+    traps:[
+      {t:"Auto-saves to different regions", r:"wrong service — that's Cross-Region Replication (CRR)."},
+      {t:"On-prem via dedicated network", r:"wrong service — that's Direct Connect / Storage Gateway."},
+      {t:"High-speed transfer to multiple AZs", r:"wrong concept — S3 already stores redundantly across AZs."}
+    ],
+    rule:"Speed up long-distance client↔S3 transfers → Transfer Acceleration (CloudFront edge). Cross-region copy = CRR; on-prem link = Direct Connect."
+  },
+  {
+    n:7, color:"#1D9E75", service:"Amazon S3 Glacier Deep Archive",
+    q:"Store 10TB for 5 years (compliance), access generally not required, retrieval up to a day OK, best cost. Which class?",
+    opts:[
+      "S3 Glacier Deep Archive",
+      "S3 Glacier Instant Retrieval",
+      "S3 Glacier Flexible Retrieval",
+      "S3 Standard-IA (Infrequent Access)"
+    ],
+    correct:0,
+    why:"It's the cheapest S3 class, designed for long-term compliance archival of rarely accessed data, with retrieval typically 12–48 hours — within the \"up to a day\" tolerance.",
+    triggers:"\"5 years\" + \"compliance\" + \"access generally not required\" + \"retrieval up to a day OK\" + \"best cost\" → lowest-cost archive tier.",
+    traps:[
+      {t:"Glacier Instant Retrieval", r:"over-provisioned — millisecond access you don't need, at higher cost."},
+      {t:"Glacier Flexible Retrieval", r:"right family, wrong tier — costs more than Deep Archive."},
+      {t:"S3 Standard-IA", r:"wrong use case — for infrequent data needing immediate retrieval; pricier for cold storage."}
+    ],
+    rule:"Long-term + compliance + rarely accessed + hours/days retrieval OK + lowest cost → S3 Glacier Deep Archive."
+  },
+  {
+    n:8, color:"#1D9E75", service:"S3 Glacier Flexible Retrieval — retrieval tiers",
+    q:"Data is in Glacier Flexible Retrieval. You urgently need 200MB within 5 minutes. Which method works?",
+    opts:[
+      "Restore request with \"Standard Extraction\" specified.",
+      "Prepare a high-performance EC2 instance for retrieval.",
+      "Download it to your PC, then extract it.",
+      "Restore request with the \"Fast Retrieve\" (Expedited) option."
+    ],
+    correct:3,
+    why:"Expedited is the only tier returning small objects (≤250MB) in 1–5 minutes, so it's the sole option meeting a sub-hour deadline.",
+    triggers:"\"Glacier Flexible Retrieval\" + \"within 5 minutes\" (forces a sub-hour tier) + \"200MB\" (under the 250MB Expedited cap).",
+    traps:[
+      {t:"Standard Extraction", r:"right service, wrong tier — Standard takes 3–5 hours."},
+      {t:"High-performance EC2", r:"irrelevant — retrieval speed is fixed by the restore tier."},
+      {t:"Download to PC then extract", r:"irrelevant — destination doesn't affect Glacier restore time."}
+    ],
+    rule:"Glacier Flexible Retrieval, need <1hr? → Expedited (1–5 min, ≤250MB). Else Standard 3–5hr, Bulk 5–12hr. Compute/destination never change retrieval time."
+  },
+  {
+    n:9, color:"#1D9E75", service:"Amazon S3 Lifecycle",
+    q:"Which feature automates changing the storage class of S3 data or deleting objects?",
+    opts:["Lifecycle","Bucket policy","Versioning","MFA Delete"],
+    correct:0,
+    why:"Lifecycle runs rule-based transition actions (move to cheaper classes) and expiration actions (auto-delete) on an age- or date-based schedule, no manual work.",
+    triggers:"\"automates the process\" + \"changing the storage class\" (transition) + \"deleting objects\" (expiration).",
+    traps:[
+      {t:"Bucket policy", r:"wrong service — controls access permissions, not data movement."},
+      {t:"Versioning", r:"wrong service — preserves object versions; doesn't transition or expire."},
+      {t:"MFA Delete", r:"wrong service — adds an auth requirement before deleting versions; a guardrail."}
+    ],
+    rule:"S3 auto-transition class or auto-delete objects → Lifecycle (transition + expiration rules)."
+  },
+  {
+    n:10, color:"#1D9E75", service:"Amazon S3 MFA Delete",
+    q:"Versioning is enabled; you want only the root user to have deletion privileges for versioned data. Which S3 feature?",
+    opts:["Bucket policy","MFA Delete","IAM policy (user policy)","ACL (Access Control List)"],
+    correct:1,
+    why:"MFA Delete requires an MFA code to delete object versions (or suspend versioning), and on a versioning-enabled bucket only the root account can enable and exercise it.",
+    triggers:"\"versioning enabled\" (MFA Delete needs versioning) + \"only the root user\" + \"deletion privileges for versioned data\".",
+    traps:[
+      {t:"Bucket policy", r:"right category, wrong tool — can't pin deletion to root or tie to versioning."},
+      {t:"IAM policy", r:"irrelevant — root isn't governed by IAM policies, can't enforce root-only."},
+      {t:"ACL", r:"wrong service — no MFA-gated or root-only version deletion concept."}
+    ],
+    rule:"Versioning + 'only root can delete versions' / require MFA to delete → MFA Delete (root-only, versioning required)."
+  },
+  {
+    n:11, color:"#1D9E75", service:"Amazon S3 ACL",
+    q:"Which S3 access control is per-bucket and per-object, set at the AWS account level, and can't filter by source IP/domain?",
+    opts:["Signed URL","Bucket policy","IAM policy (user policy)","ACL"],
+    correct:3,
+    why:"ACL is the legacy method granting coarse permissions per bucket and per object to AWS-account-level grantees; with no condition support it can't filter by IP or domain.",
+    triggers:"\"per bucket and per object\" + \"AWS account level\" + \"cannot control by source IP or domain\" (no condition keys).",
+    traps:[
+      {t:"Signed URL", r:"wrong service — time-limited access to a specific object."},
+      {t:"Bucket policy", r:"right category, wrong tool — bucket-level and CAN restrict by IP/condition."},
+      {t:"IAM policy", r:"right category, wrong tool — attaches to identities and supports IP conditions."}
+    ],
+    rule:"Per-bucket AND per-object, AWS-account-level grants, no IP/condition filtering → ACL."
+  },
+  {
+    n:12, color:"#1D9E75", service:"Amazon S3 SSE-C",
+    q:"Which two statements correctly describe \"SSE-C\"? (Select two)",
+    opts:[
+      "The keys are managed in AWS KMS.",
+      "The keys are managed by S3.",
+      "The user manages the key.",
+      "Encryption is performed on the S3 side.",
+      "Encryption is performed on the user's side."
+    ],
+    correct:[2,3],
+    why:"In SSE-C the customer provides and manages their own key, but because it's still server-side encryption, S3 performs the actual encrypt/decrypt and then discards the key.",
+    triggers:"\"SSE-C\" (C = customer-provided keys) + \"Select two\" → key-ownership fact AND where-encryption-happens fact.",
+    traps:[
+      {t:"Keys managed in KMS", r:"right service, wrong tier — that's SSE-KMS."},
+      {t:"Keys managed by S3", r:"right service, wrong tier — that's SSE-S3."},
+      {t:"Encryption on user's side", r:"wrong concept — that's client-side encryption (CSE); SSE-C is server-side."}
+    ],
+    rule:"SSE-C → customer supplies/manages the key, but S3 (server-side) does the encryption. KMS=SSE-KMS, S3-managed=SSE-S3, user-side encrypt=CSE."
+  },
+  {
+    n:13, color:"#639922", service:"EC2 Security Groups (vs Network ACL)",
+    q:"Allow internet HTTP (port 80) to a web server in a public subnet. What network access control should you configure?",
+    opts:[
+      "NACL allows outbound on port 80; all other inbound/outbound denied.",
+      "Allow outbound on port 80 in the web server's security group.",
+      "Allow inbound on port 80 in the web server's security group.",
+      "NACL allows inbound on port 80; all other inbound/outbound denied."
+    ],
+    correct:2,
+    why:"Incoming HTTP requests are inbound, and because security groups are stateful, allowing inbound on 80 automatically permits the return traffic — no outbound rule needed.",
+    triggers:"\"allow access from internet via HTTP (port 80)\" (inbound) + \"public subnet\" + tests SG vs NACL behavior (SG is stateful).",
+    traps:[
+      {t:"NACL outbound 80, deny rest", r:"wrong direction + breaks return traffic on stateless NACL ephemeral ports."},
+      {t:"SG outbound port 80", r:"wrong direction — outbound governs traffic the server initiates."},
+      {t:"NACL inbound 80, deny rest", r:"right direction, stateless trap — NACL needs explicit ephemeral-port return rule."}
+    ],
+    rule:"Inbound internet HTTP to EC2 → Security Group inbound allow port 80 (SG stateful, return auto-allowed; NACLs stateless, need ephemeral-port rules)."
+  },
+  {
+    n:14, color:"#639922", service:"EC2 Security Groups (SG referencing)",
+    q:"Many web servers (one shared SG, count varies with load) in a public subnet; one DB in a private subnet must accept only web-server traffic. What to configure?",
+    opts:[
+      "Allow the web server's IP address in the DB's security group.",
+      "DB subnet's NACL allows the web subnet's NACL.",
+      "DB subnet's NACL allows the web server's security group.",
+      "Allow the web server's security group in the DB's security group."
+    ],
+    correct:3,
+    why:"Referencing the web tier's security group as the source means any instance in that group is automatically allowed regardless of its IP — scaling needs no rule changes.",
+    triggers:"\"only accept access from web servers\" + \"shared security group\" (referenceable source) + \"count varies with load\" (IPs change → IP rules break).",
+    traps:[
+      {t:"Allow web server IP in DB SG", r:"brittle — IP rules break when autoscaling changes IPs."},
+      {t:"NACL allows web NACL", r:"wrong concept — NACLs can't reference each other, only CIDR/IP."},
+      {t:"NACL allows web SG", r:"wrong concept — NACLs can't reference security groups at all."}
+    ],
+    rule:"Restrict DB access to a dynamic/autoscaling web tier → reference the web tier's SG as the source in the DB SG (SGs reference SGs; NACLs only do CIDR/IP)."
+  }
+];
+
+let qdeck = QBANK.slice();
+let qidx = 0;
+let qflipped = false;
+
+const qCardEl = document.getElementById('q-card');
+const qCounterEl = document.getElementById('q-counter');
+
+function isCorrect(card, i){
+  return Array.isArray(card.correct) ? card.correct.includes(i) : card.correct === i;
+}
+
+function qrender(){
+  const card = qdeck[qidx];
+  qCounterEl.textContent = `Card ${qidx+1} of ${qdeck.length}`;
+  qCardEl.style.setProperty('--accent', card.color);
+  if(!qflipped){
+    const opts = card.opts.map(o => `<li>${esc(o)}</li>`).join('');
+    qCardEl.className = 'card back';
+    qCardEl.innerHTML = `
+      <span class="cat-label">Question ${card.n}</span>
+      <p class="q-text">${esc(card.q)}</p>
+      <ul class="q-opts">${opts}</ul>
+      <span class="hint" style="text-align:center">&#9757; tap to reveal answer</span>`;
+  } else {
+    const opts = card.opts.map((o,i) => {
+      const ok = isCorrect(card, i);
+      return `<li class="${ok?'correct':''}">${ok?'<span class="mark">&#10003;</span>':''}${esc(o)}</li>`;
+    }).join('');
+    const traps = card.traps.map(tr =>
+      `<div class="trap"><span class="topt">${esc(tr.t)}</span> — <span class="treason">${esc(tr.r)}</span></div>`
+    ).join('');
+    qCardEl.className = 'card back';
+    qCardEl.innerHTML = `
+      <span class="cat-label">Question ${card.n} · ${esc(card.service)}</span>
+      <p class="q-text">${esc(card.q)}</p>
+      <ul class="q-opts">${opts}</ul>
+      <div class="section"><span class="label">&#9670; Why</span>${esc(card.why)}</div>
+      <div class="section"><span class="label">&#9755; Trigger words</span>${esc(card.triggers)}</div>
+      <div class="section"><span class="label">&#9888; Trap tags</span>${traps}</div>
+      <div class="section"><span class="label">&#9733; Rule card</span>${esc(card.rule)}</div>`;
+  }
+}
+
+qCardEl.onclick = () => { qflipped = !qflipped; qrender(); };
+document.getElementById('q-flip').onclick = (e)=>{ e.stopPropagation(); qflipped = !qflipped; qrender(); };
+document.getElementById('q-next').onclick = ()=>{ qidx = (qidx+1) % qdeck.length; qflipped = false; qrender(); };
+document.getElementById('q-prev').onclick = ()=>{ qidx = (qidx-1+qdeck.length) % qdeck.length; qflipped = false; qrender(); };
+document.getElementById('q-shuffle').onclick = ()=>{
+  for(let i = qdeck.length-1; i>0; i--){ const j = Math.floor(Math.random()*(i+1)); [qdeck[i],qdeck[j]]=[qdeck[j],qdeck[i]]; }
+  qidx = 0; qflipped = false; qrender();
+};
+
+/* ============================================================
+   Keyboard — routed to the active deck
+   ============================================================ */
 document.addEventListener('keydown', (e)=>{
-  if(e.key === 'ArrowRight'){ idx = (idx+1) % deck.length; flipped = false; render(); }
-  else if(e.key === 'ArrowLeft'){ idx = (idx-1+deck.length) % deck.length; flipped = false; render(); }
-  else if(e.key === ' '){ e.preventDefault(); flipped = !flipped; render(); }
+  const view = currentView();
+  if(view === 'services'){
+    if(e.key === 'ArrowRight'){ idx = (idx+1) % deck.length; flipped = false; render(); }
+    else if(e.key === 'ArrowLeft'){ idx = (idx-1+deck.length) % deck.length; flipped = false; render(); }
+    else if(e.key === ' '){ e.preventDefault(); flipped = !flipped; render(); }
+  } else if(view === 'qbank'){
+    if(e.key === 'ArrowRight'){ qidx = (qidx+1) % qdeck.length; qflipped = false; qrender(); }
+    else if(e.key === 'ArrowLeft'){ qidx = (qidx-1+qdeck.length) % qdeck.length; qflipped = false; qrender(); }
+    else if(e.key === ' '){ e.preventDefault(); qflipped = !qflipped; qrender(); }
+  }
 });
 
 buildFilters();
 render();
+qrender();
 </script>
 </body>
 </html>
